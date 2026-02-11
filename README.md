@@ -15,8 +15,7 @@ This repository provides the codebase for **PRISM (Parallel Residual Iterative S
 - `models/prism_ablate_no_gain.py`: w/o gain predictor (constant step size).
 - `train_link_prediction.py`: link prediction training.
 - `evaluate_node_retrieval.py`: retrieval evaluation (Hits@k).
-- `train_edge_classification.py`: edge classification training.
-- `evaluate_edge_classification.py`: edge classification evaluation.
+- `evaluate_models_utils.py`: shared evaluation utilities for train/eval.
 - `utils/load_configs.py`: shared CLI configuration.
 
 ## Requirements
@@ -25,31 +24,57 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-## Data
-Place datasets under:
+## Data Preparation
+### 1. Download Raw Data
+Please download the source data from the following links:
+
+- **Amazon Review Data:**
+  - Source: [SNAP Amazon Data](https://snap.stanford.edu/data/amazon/productGraph/)
+  - Instructions: Download the specific category files. You will need both the **5-core** (reviews) and **metadata** files for your target category (e.g., *Books*, *Electronics*, *Movies and TV*).
+- **Yelp Dataset:**
+  - Source: [Yelp Data (Google Drive)](https://drive.google.com/drive/folders/1QFxHIjusLOFma30gF59_hcB19Ix3QZtk)
+
+### 2. Preprocess Data
+Before running the model, you need to format the raw data into the expected directory structure.
+
+1. Open `dataset_preprocess.py` and modify the file paths to point to your downloaded source files (Amazon 5-core/metadata or Yelp data).
+2. Run the preprocessing script:
+
+```bash
+python dataset_preprocess.py
 ```
+
+This will generate the standard dataset files (`edge_list.csv`, `entity_text.csv`, `relation_text.csv`) in the following directory structure:
+
+```text
 DyLink_Datasets/<dataset_name>/
-```
-Expected files:
-- `edge_list.csv`
-- `entity_text.csv`
-- `relation_text.csv`
-
-Supported datasets in code:
-```
-Amazon_books, Amazon_elec, Amazon_movies,
-Enron, GDELT, Googlemap_CT, ICEWS1819,
-Stack_elec, Stack_english, Stack_ubuntu, Yelp
+├── edge_list.csv
+├── entity_text.csv
+└── relation_text.csv
 ```
 
-### Text Embeddings
-If using text features (`--use_feature Bert`), generate embeddings:
+**Supported Datasets:** `Amazon_books`, `Amazon_elec`, `Amazon_movies`, `Yelp`
+
+### 3. Feature Extraction
+To obtain semantic features for the nodes, you need to generate pretrained embeddings.
+
+- **Text Features (BERT):**
+  Run the following script to get BERT-encoded feature vectors for the text in the dataset:
+  ```bash
+  python get_pretrained_embeddings.py
+  ```
+
+- **Multimodal Features (Optional):**
+  If you wish to experiment with multimodal settings, you can use Qwen to generate embeddings:
+  ```bash
+  python get_pretrained_embeddings_qwen.py
+  ```
+
+## Synthetic Data
+To generate and run experiments on synthetic datasets, simply execute the following script:
+
 ```bash
-python get_pretrained_embeddings.py
-```
-(Optional) Qwen embeddings:
-```bash
-python get_pretrained_embeddings_qwen.py
+python test_syntheticdata.py
 ```
 
 ## Training and Evaluation
@@ -71,33 +96,6 @@ python train_link_prediction.py \
 ```bash
 python evaluate_node_retrieval.py \
   --dataset_name Amazon_movies \
-  --model_name prism \
-  --num_layers 2 \
-  --num_heads 2 \
-  --channel_embedding_dim 64 \
-  --num_neighbors 20 \
-  --gpu 0 \
-  --use_feature Bert
-```
-
-### Edge Classification (Train)
-```bash
-python train_edge_classification.py \
-  --dataset_name GDELT \
-  --model_name prism \
-  --num_layers 2 \
-  --num_heads 2 \
-  --channel_embedding_dim 64 \
-  --num_neighbors 20 \
-  --num_epochs 10 \
-  --gpu 0 \
-  --use_feature Bert
-```
-
-### Edge Classification (Eval)
-```bash
-python evaluate_edge_classification.py \
-  --dataset_name GDELT \
   --model_name prism \
   --num_layers 2 \
   --num_heads 2 \
@@ -135,4 +133,4 @@ python train_link_prediction.py \
 - Logs: `logs/<model>/<dataset>/...`
 
 ## Citation
-If you use this code, please cite the PRISM paper (ICML 2026 submission).
+If you use this code, please cite the PRISM paper.
