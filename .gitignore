@@ -1,22 +1,48 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
 *.so
 .Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 *.egg-info/
-.eggs/
 dist/
 build/
 
-# IDE & OS
+# OS and editors
 .DS_Store
 *.swp
 *.swo
+.idea/
+.vscode/
 
-# Logs
-nohup.out
+# Logs and runtime output
 *.log
+nohup.out
+logs/
+wandb/
+runs/
 
-# Model weights (过大，建议用 Hugging Face 或 Git LFS 单独管理)
-llm_model/
+# Model and experiment artifacts
+checkpoints/
+saved_models/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Recommendation data/features
+rec/DyLink_Datasets/
+rec/llm_model/
+rec/Amazon_books/
+rec/Amazon_elec/
+rec/Amazon_movies/
+rec/Yelp/
+
+# Language modeling data/tokenizers
+llm/data/train/
+llm/data/validation/
+llm/data/test/
+llm/ft_local/
+

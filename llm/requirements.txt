@@ -1,0 +1,7 @@
+# Requirements for PRISM and Baselines
+# Tested on: NVIDIA H20 (96GB HBM3), CUDA 12.x, Python 3.10+
+
+torch>=2.2.0
+transformers>=4.35.0
+datasets>=2.15.0
+pyarrow>=14.0.0

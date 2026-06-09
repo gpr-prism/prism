@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDE & OS
+.DS_Store
+*.swp
+*.swo
+
+# Logs
+nohup.out
+*.log
+
+# Model weights (过大，建议用 Hugging Face 或 Git LFS 单独管理)
+llm_model/
